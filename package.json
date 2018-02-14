@@ -2,6 +2,7 @@
   "name": "payment_portal_redux",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://ElizabethJWJames.github.io/payment_portal_redux",
   "dependencies": {
     "history": "^4.7.2",
     "immutable": "^3.8.2",
@@ -29,12 +30,15 @@
     "start:dev": "webpack-dev-server",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "devDependencies": {
     "react-redux": "^5.0.6",
     "redux-devtools": "^3.4.1",
-    "webpack-dev-server": "^2.11.1"
+    "webpack-dev-server": "^2.11.1",
+    "gh-pages": "*"
   },
   "proxy": "http://localhost:85/payment_portal"
 }
