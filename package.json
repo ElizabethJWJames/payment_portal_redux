@@ -18,12 +18,14 @@
     "react-router": "^4.2.0",
     "react-router-config": "^1.0.0-beta.4",
     "react-router-dom": "^4.2.2",
+    "react-router-redux": "^4.0.8",
     "react-scripts": "1.1.0",
     "react-virtualized": "^9.18.0",
     "recompose": "^0.26.0",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
-    "styled-components": "^2.4.0"
+    "styled-components": "^2.4.0",
+    "whatwg-fetch": "2.0.3"
   },
   "scripts": {
     "start": "react-scripts start",

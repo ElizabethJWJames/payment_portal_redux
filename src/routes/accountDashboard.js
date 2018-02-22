@@ -46,7 +46,7 @@ class DashboardRoute extends Component {
     return (
       <div className = "accountSummery">
         <h2 className = "currentAccount">
-        {`Account: ${accountItem.accountNumber} ${accountItem.carYear} ${accountItem.carMake} ${accountItem.carModel}`}
+        {`Account: ${accountItem.AccountText}`}
         </h2>
         <p>
           This is the current information that we have on-file. If this information is not correct please contact Training Solutions CAC/EFI at (941) 219-4344
@@ -56,7 +56,7 @@ class DashboardRoute extends Component {
               this.props.accountInformation.map((item, index)=>{
                 return (
                   <option value= {index} key = {index}>
-                    {`${item.accountNumber} ${item.carYear} ${item.carMake} ${item.carModel}`}
+                    {`${item.AccountText}`}
                   </option>
                 )
               })
@@ -74,14 +74,14 @@ class DashboardRoute extends Component {
         <div className = "myDetails">
           <div className = "contactInfo">
             <h4>My Details</h4>
-            <p><b>Name:</b>{accountItem.customerName}</p>
-            <p><b>Home:</b> {accountItem.customerHomePhone}</p>
-            <p><b>Cell:</b> {accountItem.customerCellPhone}</p>
+            <p><b>Name:</b>{accountItem.personal_details.B_First + " " + accountItem.personal_details.B_Last }</p>
+            <p><b>Home:</b> {accountItem.personal_details.B_HPhone}</p>
+            <p><b>Cell:</b> {accountItem.personal_details.B_Cphone}</p>
           </div>
           <div className='Address'>
             <h4>My Address</h4>
-            <p>{accountItem.customerStreet}</p>
-            <p>{`${accountItem.customerCity} ${accountItem.customerState}, ${accountItem.customerZip}`}</p>
+            <p>{accountItem.personal_details.B_addr}</p>
+            <p>{`${accountItem.personal_details.B_city} ${accountItem.personal_details.B_State}, ${accountItem.personal_details.B_zip}`}</p>
           </div>
         </div>
         <div className = "changePassword">
@@ -90,18 +90,18 @@ class DashboardRoute extends Component {
     )
   }
 
-  renderTable(){
+  renderTable(accountItem){
 
     return (
       <AutoSizer disableHeight>
       {({width})=>{
         return (
           <Table
-            rowGetter = {({ index }) => this.props.cardsOnFile[index]}
+            rowGetter = {({ index }) => accountItem.credit_cards[index]}
             width = {width-17}
             rowHeight = {48}
             height = {350}
-            rowCount = {this.props.cardsOnFile.length}
+            rowCount = {accountItem.credit_cards.length}
             className = "cardsOnFileTable"
             headerClassName = "tHeader"
             headerHeight = {48}
@@ -123,7 +123,7 @@ class DashboardRoute extends Component {
           />
           <Column
             label="Last Four"
-            dataKey="last4"
+            dataKey="LAST4"
             className="tColumn"
             width = {width/3}
           />
@@ -151,7 +151,7 @@ class DashboardRoute extends Component {
     return (
       <div className = "cardInformation">
         <div className = "cardsOnFile">
-          {this.renderTable()}
+          {this.renderTable(accountItem)}
         </div>
         <div className = "newCard">
         </div>
@@ -164,50 +164,68 @@ class DashboardRoute extends Component {
       <div className = "vehicleInformation">
         <div className = "vehicle">
           <h4>Vehicle Information</h4>
-          <p><b>Stock:</b> {accountItem.carStock}</p>
-          <p><b>Vin:</b> {accountItem.carVin}</p>
-          <p><b>Year:</b> {accountItem.carYear}</p>
-          <p><b>Make:</b> {accountItem.carMake}</p>
-          <p><b>Model:</b> {accountItem.carModel}</p>
-          <p><b>Trim:</b> {accountItem.carTrim}</p>
-          <p><b>Type:</b> {accountItem.carType}</p>
-          <p><b>Color:</b> {accountItem.carColor}</p>
-          <p><b>Miles:</b> {accountItem.carMiles}</p>
+          <p><b>Stock:</b> {accountItem.vehicle_info.STOCKNUM}</p>
+          <p><b>Vin:</b> {accountItem.vehicle_info.VIN}</p>
+          <p><b>Year:</b> {accountItem.vehicle_info.YEAR}</p>
+          <p><b>Make:</b> {accountItem.vehicle_info.MAKE}</p>
+          <p><b>Model:</b> {accountItem.vehicle_info.MODEL}</p>
+          <p><b>Trim:</b> {accountItem.vehicle_info.TRIM}</p>
+          <p><b>Type:</b> {accountItem.vehicle_info.BodyStyle}</p>
+          <p><b>Color:</b> {accountItem.vehicle_info.COLOR}</p>
+          <p><b>Miles:</b> {accountItem.vehicle_info.MILESOUT}</p>
         </div>
         <div className = "insurance">
           <h4>Insurance Information</h4>
-          <p><b>Company: </b> {accountItem.insuranceCompany}</p>
-          <p><b>Street: </b> {accountItem.insuranceStreet}</p>
-          <p><b>City: </b> {accountItem.insuranceCity}</p>
-          <p><b>State: </b> {accountItem.insuranceState}</p>
-          <p><b>Zip: </b> {accountItem.insuranceZip}</p>
-          <p><b>Phone: </b> {accountItem.insurancePhone}</p>
-          <p><b>Fax: </b> {accountItem.insuranceFax}</p>
-          <p><b>Contact: </b> {accountItem.insuranceContact}</p>
-          <p><b>Contact Phone: </b> {accountItem.insuranceContactPhone}</p>
-          <p><b>Contact Fax: </b> {accountItem.insuranceContactFax}</p>
-          <p><b>Email: </b> {accountItem.insuranceEmail}</p>
-          <p><b>Required: </b> {accountItem.insuranceRequired}</p>
-          <p><b>Policy No: </b> {accountItem.insurancePolicyNo}</p>
-          <p><b>Expiration Date: </b> {accountItem.insuranceExpirationDate}</p>
-          <p><b>Canceled: </b> {accountItem.insuranceCanceled}</p>
-          <p><b>Cancellation Date: </b> {accountItem.insuranceCancellationDate}</p>
-          <p><b>Coverage: </b> {accountItem.insuranceCoverage}</p>
-          <p><b>Comp Deduction: </b> {accountItem.insuranceCompDeduction}</p>
-          <p><b>Fire Theft: </b> {accountItem.insuranceFireTheft}</p>
-          <p><b>CPI Option: </b> {accountItem.insuranceCPIOption}</p>
-          <p><b>CPI Status: </b> {accountItem.insuranceCPIStatus}</p>
+          <p><b>Company: </b> {accountItem.vehicle_insurnce.InsCName}</p>
+          <p><b>Street: </b> {accountItem.vehicle_insurnce.InsCAddr}</p>
+          <p><b>City: </b> {accountItem.vehicle_insurnce.InsCCity}</p>
+          <p><b>State: </b> {accountItem.vehicle_insurnce.InsCState}</p>
+          <p><b>Zip: </b> {accountItem.vehicle_insurnce.InsCZip}</p>
+          <p><b>Phone: </b> {accountItem.vehicle_insurnce.InsPhone}</p>
+          <p><b>Fax: </b> {accountItem.vehicle_insurnce.InsFax}</p>
+          <p><b>Contact: </b> {accountItem.vehicle_insurnce.InsCPerson}</p>
+          <p><b>Contact Phone: </b> {accountItem.vehicle_insurnce.InsCPhone}</p>
+          <p><b>Contact Fax: </b> {accountItem.vehicle_insurnce.InsCFax}</p>
+          <p><b>Email: </b> {accountItem.vehicle_insurnce.InsEmail}</p>
+          <p><b>Required: </b> {accountItem.vehicle_insurnce.Insreq}</p>
+          <p><b>Policy No: </b> {accountItem.vehicle_insurnce.inspolicynum}</p>
+          <p><b>Expiration Date: </b> {accountItem.vehicle_insurnce.InsExpire}</p>
+          <p><b>Canceled: </b> {accountItem.vehicle_insurnce.InsCancelled}</p>
+          <p><b>Cancellation Date: </b> {accountItem.vehicle_insurnce.InsCanDate}</p>
+          <p><b>Coverage: </b> {accountItem.vehicle_insurnce.InsCoverage}</p>
+          <p><b>Comp Deduction: </b> {accountItem.vehicle_insurnce.InsCompDed}</p>
+          <p><b>Fire Theft: </b> {accountItem.vehicle_insurnce.InsFireDed}</p>
+          <p><b>CPI Option: </b> {accountItem.vehicle_insurnce.OnCPI}</p>
+          <p><b>CPI Status: </b> {accountItem.vehicle_insurnce.CPIStatus}</p>
         </div>
         <div>
           <p>Please provide the following information to your insurance company to list us as a Loss Payee on your policy:</p>
           <div>
             <p><b>Loss Payee:</b></p>
-            <p>{accountItem.lossPayeeName}</p>
-            <p>{accountItem.lossPayeeStreet}</p>
-            <p>{`${accountItem.lossPayeeCity} ${accountItem.lossPayState}, ${accountItem.lossPayeeZip}`}</p>
-            <p>Phone: {accountItem.lossPayeePhone}</p>
-            <p>Fax: {accountItem.lossPayeeFax}</p>
-            <p>Email: {accountItem.lossPayeeEmail}</p>
+            <p>{
+              'Training Solutions CAC/EFI'
+              // accountItem.company_info.LegalName
+            }</p>
+            <p>{
+              '123 Main Street'
+              // accountItem.company_info.Address
+            }</p>
+            <p>{
+              'Bradenton, FL 34205'
+              // `${accountItem.company_info.City} ${accountItem.company_info.State}, ${accountItem.company_info.Zip}`
+            }</p>
+            <p>Phone: {
+              '(941) 219-4344'
+              // accountItem.company_info.ContactPhone
+            }</p>
+            <p>Fax: {
+              '(941) 219-4344'
+              // accountItem.company_info.Fax
+            }</p>
+            <p>Email: {
+              'virginia@mycarafc.com'
+              // accountItem.company_info.ContactEmail
+            }</p>
           </div>
         </div>
       </div>
@@ -219,28 +237,28 @@ class DashboardRoute extends Component {
       <div className = "loanInfo">
         <div className = "loan">
           <h4>Account Information (Loan)</h4>
-          <p><b>Sold: </b> {accountItem.loanSold}</p>
-          <p><b>Amount: </b> {accountItem.loanAmount}</p>
-          <p><b>Interest: </b> {accountItem.loanInterest}</p>
+          <p><b>Sold: </b> {accountItem.account_info.SALEDATE}</p>
+          <p><b>Amount: </b> {accountItem.account_info.loanAmount}</p>
+          <p><b>Interest: </b> {accountItem.account_info.loanInterest}</p>
         </div>
         <div className = "loanRepaymentSchedule">
           <h4>Repayment Schedule:</h4>
-          <p>{accountItem.loanRepaymentSchedule}</p>
+          <p>{accountItem.account_info.plan1}</p>
           <div className = "balance">
-            <p><b>Sidenote Balance: </b> {accountItem.loanSidenoteBal}</p>
-            <p><b>Principle Balance: </b> {accountItem.loanPrincipleBal}</p>
-            <p><b>Accrued Intrest: </b> {accountItem.loanAccruedInterest}</p>
+            <p><b>Sidenote Balance: </b> {accountItem.account_info.snBalance}</p>
+            <p><b>Principle Balance: </b> {accountItem.account_info.prinbal}</p>
+            <p><b>Accrued Intrest: </b> {accountItem.account_info.ACCRUEDINT}</p>
           </div>
           <div className = "lastPayment">
-            <p><b>Last Payment: </b> {accountItem.loanLastPayment}</p>
+            <p><b>Last Payment: </b> {accountItem.account_info.lastpmtamt + " on " + accountItem.account_info.LastPmtPaid}</p>
           </div>
           <div className = "due">
-            <p><b>Loan Payment: </b> {accountItem.loanPaymentAmtDue}</p>
-            <p><b>CP: </b> {accountItem.loanCPAmtDue}</p>
-            <p><b>Sidenote: </b> {accountItem.loanSidenoteAmtDue}</p>
-            <p><b>NSF Fee: </b> {accountItem.loanNSFFeeAmtDue}</p>
-            <p><b>Late Fee: </b> {accountItem.loanLateFeeAmtDue}</p>
-            <p><b>Total Due: </b> <b>{accountItem.loanTotalAmountDue}</b></p>
+            <p><b>Loan Payment: </b> {accountItem.account_info.pmtdue}</p>
+            <p><b>CP: </b> {accountItem.account_info.cpduenow}</p>
+            <p><b>Sidenote: </b> {accountItem.account_info.snDueNow}</p>
+            <p><b>NSF Fee: </b> {accountItem.account_info.nsfdue}</p>
+            <p><b>Late Fee: </b> {accountItem.account_info.LCDue}</p>
+            <p><b>Total Due: </b> <b>{accountItem.account_info.total}</b></p>
           </div>
         </div>
       </div>

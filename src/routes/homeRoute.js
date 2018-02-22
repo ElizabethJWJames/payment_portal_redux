@@ -13,9 +13,9 @@ class HomeRoute extends Component {
   }
 
   onLoginSubmit(values){
-    actions.main.signIn(values)
+    //actions.main.signIn(values)
+    actions.main.auth(values)
   }
-
 
   render() {
     const HomeDiv = styled.div`

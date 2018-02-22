@@ -15,6 +15,7 @@ class PayMeRoute extends Component {
       };
       this.changeIndex = this.changeIndex.bind(this);
       this.cardOptions = this.cardOptions.bind(this);
+      this.renderAccountSelect = this.renderAccountSelect.bind(this);
   }
 
   static propTypes = {
@@ -41,12 +42,30 @@ class PayMeRoute extends Component {
   }
 
   cardOptions(){
-    return this.props.cardsOnFile.map((item)=>{
+    return this.props.accountInformation[this.state.activeAccount].credit_cards.map((item, index)=>{
       return {
-        label: item.last4,
-        value: item.last4
+        label: item.LAST4,
+        value: item.LAST4
       }
     })
+  }
+
+  renderAccountSelect(){
+    return (
+      <div className = "accountSelect">
+          <select className="changeAccount" value={this.state.activeAccount} onChange = {this.changeIndex}>
+            {
+              this.props.accountInformation.map((item, index)=>{
+                return (
+                  <option value= {index} key = {index}>
+                    {`${item.AccountText}`}
+                  </option>
+                )
+              })
+            }
+          </select>
+      </div>
+    )
   }
 
   render() {
@@ -125,17 +144,7 @@ class PayMeRoute extends Component {
       <PaymentDiv>
         <h2>Make A Payment</h2>
         <h3>Choose an Account</h3>
-        <select className="changeAccount" value={this.state.activeAccount} onChange = {this.changeIndex}>
-          {
-              this.props.accountInformation.map((item, index)=>{
-                return (
-                  <option value= {index} key = {index}>
-                    {`${item.accountNumber} ${item.carYear} ${item.carMake} ${item.carModel}`}
-                  </option>
-                )
-              })
-            }
-          </select>
+          {this.renderAccountSelect()}
         <div className = "alerts">
         </div>
         <h3>Payment Information</h3>

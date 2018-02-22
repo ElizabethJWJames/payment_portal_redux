@@ -21,9 +21,13 @@ import {
 
 class Main extends Component {
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return !fromJS(nextProps.navigationList).equals(this.props.defaultCompStyle) || !fromJS(nextProps).equals(this.props) || !fromJS(nextState).equals(this.state);
-  }
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   return !fromJS(nextProps.navigationList).equals(this.props.defaultCompStyle) || !fromJS(nextProps).equals(this.props) || !fromJS(nextState).equals(this.state);
+  // }
+  componentWillReceiveProps(nextProps) {
+      console.log(this.props, nextProps)
+    }
+
 
   render() {
     const AppDiv = styled.div`
@@ -40,13 +44,13 @@ class Main extends Component {
       ${props => css`${this.props.defaultCompStyle}`}
     `;
 
-
+    console.log(this.props)
     return (
         <div className="App">
           <NavigationBar
-          location = {this.props.location}
-          navigationList = {this.props.navigationList}
-           />
+              location = {this.props.location}
+              navigationList = {this.props.navigationList}
+            />
           <HeaderDiv>
             <h1>
               AutoStart Payment Portal
@@ -65,6 +69,7 @@ class Main extends Component {
                 <Route path="/makeAPayment" component={PayMeRoute}/>
                 <Route path="/paymentHistory" component={PaymentHistoryRoute}/>
                 <Redirect from="/" exact to="/home" />
+
               </Switch>
             </BrowserRouter>
           </AppDiv>
@@ -74,7 +79,8 @@ class Main extends Component {
 }
 const hocComponent = compose( connect((state, props)=>{
     return ({
-      navigationList: state.main.navigation
+      navigationList: state.main.navigation,
+      authToken: state.main.authtoken
     });
 }));
 

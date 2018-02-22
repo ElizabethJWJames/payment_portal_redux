@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import {auto, reducers } from './redux-auto/index.js';
+import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-router-redux'
 
 import Main from './routes/main.js';
 import {
@@ -41,10 +42,16 @@ import './App.css';
 const webpackModules = require.context("./store", true, /\.js$/);
 
 const middleware = applyMiddleware( auto(webpackModules, webpackModules.keys()))
-const store = createStore(combineReducers(reducers), middleware );
-
-
 const history = createBrowserHistory();
+const historyMiddleware = applyMiddleware(routerMiddleware(history))
+const store = createStore(
+  combineReducers({
+    ...reducers,
+    router: routerReducer
+  }),
+  middleware,
+  historyMiddleware
+);
 
 class App extends Component {
 
