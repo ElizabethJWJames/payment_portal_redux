@@ -8,8 +8,10 @@ import { Form, Text, TextArea } from 'react-form';
 class NewAccountForm extends Component {
   constructor(props){
       super(props);
-      this.state = {};
-      this.errorValidator = this.errorValidator.bind(this);
+      this.state = {
+        displayError: false
+      };
+      this.passwordsMatchCheck=this.passwordsMatchCheck.bind(this);
   }
 
   static propTypes = {
@@ -24,18 +26,19 @@ class NewAccountForm extends Component {
     return !fromJS(nextProps).equals(this.props) || !fromJS(nextState).equals(this.state);
   }
 
-  errorValidator(values={}) {
-      return {
-        name: !values.name || (values.name && values.name.trim() === '') ? (<p>Name is a required field</p>) : (<div/>),
-        email: !values.email || (values.email && values.email.trim() === '') ? (<p>Email is a required field</p>) : (<div/>),
-        phone: !values.phone || (values.phone && values.phone.trim() === '') ? (<p>Phone Number is a required field</p>) : (<div/>),
-        msg: !values.msg || (values.msg && values.msg.trim() === '') ? (<p>A Message is a required field</p>) : (<div/>),
-      };
+  passwordsMatchCheck(values){
+    console.log('CHECK',values)
+    if(values.submittedValues.password === values.submittedValues.confirmPassword){
+      this.props.onFormSubmit(values);
+      this.setState((prevState)=>{
+        return {...prevState, displayError: false}
+     });
+    }else{
+      this.setState((prevState)=>{
+        return {...prevState, displayError: true}
+     });
     }
-    // {this.errorValidator().name}
-    // {this.errorValidator().email}
-    // {this.errorValidator().phone}
-    // {this.errorValidator().msg}
+  }
 
   render() {
     const RegistrationDiv = styled.div`
@@ -44,12 +47,30 @@ class NewAccountForm extends Component {
       justify: space-around;
       flex-wrap: wrap;
       text-align: left;
+      > h2 {
+        background: #0a1f44;
+        color: #fff;
+        width: calc(100% - 20px);
+        margin: 0px;
+        padding: 15px 10px;
+      }
+      .error.error {
+        font-size: 1em;
+        padding: 20px 10px;
+        color: #ED1C24;
+        display: ${this.state.displayError ? 'block' : 'none'}
+      }
+      .instructions.instructions {
+        font-size: 1em;
+        padding: 20px 10px;
+      }
       .registrationFrom.registrationFrom {
         display: flex;
         flex-direction: column;
         justify-content: space-around;
         align-items: center;
-        width: 100%;
+        width: calc(100% - 20px);
+        padding: 10px
       }
       .registrationInput.registrationInput {
         width: calc(100% - 20px);
@@ -59,14 +80,7 @@ class NewAccountForm extends Component {
         flex-direction: column;
         margin-bottom: 10px;
       }
-      .contactTextArea.contactTextArea {
-        width: calc(100% - 20px);
-        height: 96px;
-        border-radius: 5px;
-        display: flex;
-        flex-direction: column;
-      }
-      .contactSubmit.contactSubmit {
+      .registerSubmit.registerSubmit {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -86,8 +100,14 @@ class NewAccountForm extends Component {
     return (
       <RegistrationDiv>
       <h2> Register </h2>
+      <div className = "instructions">
+        Please enter your infomation below. You will receive a link to verify your account.
+      </div>
+      <div className = "error">
+        Passwords Do Not Match
+      </div>
       <Form
-        onSubmit={submittedValues => this.props.onFormSubmit( { submittedValues } )}
+        onSubmit={submittedValues => this.passwordsMatchCheck( { submittedValues } )}
       >
         { formApi => (
           <form className = 'registrationFrom' onSubmit={formApi.submitForm} id="newAccountForm">
@@ -98,6 +118,7 @@ class NewAccountForm extends Component {
                 field="name"
                 id="name"
                 placeholder = "Full Name on Card"
+                required
               />
             <Text
                 className = 'registrationInput'
@@ -105,6 +126,7 @@ class NewAccountForm extends Component {
                 field="SSN"
                 id="SSN"
                 placeholder = "Full SSN (123-45-6789)"
+                required
               />
             <Text
                 className = 'registrationInput'
@@ -112,20 +134,23 @@ class NewAccountForm extends Component {
                 field="DOB"
                 id="DOB"
                 placeholder = "Enter Date of Birth (MM/DD/YYYY)"
+                required
               />
             <Text
                 className = 'registrationInput'
                 type = 'text'
                 field="email"
-                id="email"
+                id="regEmail"
                 placeholder = "Email"
+                required
               />
             <Text
                 className = 'registrationInput'
                 type = 'text'
                 field="password"
-                id="password"
+                id="regPassword"
                 placeholder = "Password"
+                required
               />
             <Text
                 className = 'registrationInput'
@@ -133,9 +158,10 @@ class NewAccountForm extends Component {
                 field="confirmPassword"
                 id="confirmPassword"
                 placeholder = "Confirm Password"
+                required
               />
 
-            <button className="newCardSubmit" type="submit">Submit</button>
+            <button className="registerSubmit" type="submit">Submit</button>
           </form>
         )}
       </Form>

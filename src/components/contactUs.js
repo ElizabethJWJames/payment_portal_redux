@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { fromJS } from 'immutable';
 import styled, { css } from 'styled-components';
-import { Form, Text, TextArea } from 'react-form';
+import { Form, Text, TextArea, Checkbox } from 'react-form';
 
 //0a1f44
 class ContactUsForm extends Component {
   constructor(props){
       super(props);
       this.state = {};
-      this.errorValidator = this.errorValidator.bind(this);
   }
 
   static propTypes = {
@@ -23,19 +22,6 @@ class ContactUsForm extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     return !fromJS(nextProps).equals(this.props) || !fromJS(nextState).equals(this.state);
   }
-
-  errorValidator(values={}) {
-      return {
-        name: !values.name || (values.name && values.name.trim() === '') ? (<p>Name is a required field</p>) : (<div/>),
-        email: !values.email || (values.email && values.email.trim() === '') ? (<p>Email is a required field</p>) : (<div/>),
-        phone: !values.phone || (values.phone && values.phone.trim() === '') ? (<p>Phone Number is a required field</p>) : (<div/>),
-        msg: !values.msg || (values.msg && values.msg.trim() === '') ? (<p>A Message is a required field</p>) : (<div/>),
-      };
-    }
-    // {this.errorValidator().name}
-    // {this.errorValidator().email}
-    // {this.errorValidator().phone}
-    // {this.errorValidator().msg}
 
   render() {
     const ContactUsDiv = styled.div`
@@ -86,7 +72,7 @@ class ContactUsForm extends Component {
     return (
       <ContactUsDiv>
       <Form
-        onSubmit={submittedValues => this.props.onFormSubmit( { submittedValues } )}
+        onSubmit={(submittedValues) => this.props.onFormSubmit( { submittedValues } )}
       >
         { formApi => (
           <form className = 'contactForm' onSubmit={formApi.submitForm} id="form1">
@@ -96,6 +82,7 @@ class ContactUsForm extends Component {
                 type = 'text'
                 field="name"
                 id="name"
+                required
                 placeholder = "Full Name (required)"
               />
             <Text
@@ -103,6 +90,7 @@ class ContactUsForm extends Component {
                 type = 'text'
                 field="email"
                 id="email"
+                required
                 placeholder = "Email Address (required)"
               />
             <Text
@@ -110,6 +98,7 @@ class ContactUsForm extends Component {
                 type = 'tel'
                 field="phone"
                 id="phone"
+                required
                 placeholder = "Phone (required)"
               />
             <Text
@@ -119,7 +108,8 @@ class ContactUsForm extends Component {
                 id="account"
                 placeholder = "Account Number (Optional)"
               />
-            <TextArea className = 'contactTextArea' field="msg" id="msg" placeholder = "Message (Required)"/>
+              contactDBbuddy <Checkbox field="contactDBbuddy" id="contactDBbuddy" className="contactDBbuddy" />
+            <TextArea className = 'contactTextArea' field="msg" id="msg" required placeholder = "Message (Required)"/>
             <button className="contactSubmit" type="submit">Submit</button>
           </form>
         )}

@@ -43,7 +43,7 @@ const authNav = [
 ];
 
 export default function app(app={} , action) {
-  console.log('&&&&&&&&& ', history )
+  //console.log('&&&&&&&&& ', history )
   //console.log("app / index >> default function for app | TYPE = ",action.type)
   //let myReturn = app;
     switch (action.type) {
@@ -88,7 +88,7 @@ export default function app(app={} , action) {
         } else {
           newAccountArray = newAccountArray.concat([combinedAccountInfo]);
         }
-      //  history.push('/myAccount');
+        history.push('/myAccount');
         const newStore = objectMerge({...app, ...{accountInformation: newAccountArray}, ...{navigation: authNav}})
         return newStore;
       }

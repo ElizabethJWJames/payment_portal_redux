@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import { fromJS } from 'immutable';
 import styled, { css } from 'styled-components';
 import ContactUsForm from '../components/contactUs.js';
+import actions from '../redux-auto/index.js';
 
 //0a1f44
 class ContactUsRoute extends Component {
   constructor(props){
       super(props);
       this.state = {};
-
   }
 
   static propTypes = {
@@ -26,6 +26,12 @@ class ContactUsRoute extends Component {
 
   onFormSubmit(values){
     console.log('route', values)
+    if(values.submittedValues.contactDBbuddy){
+      actions.main.sendDBEmail(values)
+    }else{
+      actions.main.sendEmail(values)
+    }
+
   }
 
   render() {

@@ -5,89 +5,52 @@ import { connect } from 'react-redux';
 import { compose } from 'recompose';
 
 import { AutoSizer, Table, Column } from 'react-virtualized';
-
+import SvgIcon from './../components/openIconicSvgs/svgIcon.js';
 
 //0a1f44
 class PaymentHistoryRoute extends Component {
   constructor(props){
       super(props);
-      this.state = {};
+      this.state = {
+        activeAccount: 0
+      };
+      this.changeIndex = this.changeIndex.bind(this);
+      this.renderTable = this.renderTable.bind(this);
+      this.renderRecieptButton = this.renderRecieptButton.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     return !fromJS(nextProps).equals(this.props) || !fromJS(nextState).equals(this.state);
   }
 
-  // createTable(){
-  //   return (
-  //     <table className = 'payHisTable'>
-  //     <thead>
-  //       <tr className = 'tRow'>
-  //         <th className = "tHeader">Payment Date</th>
-  //         <th className = "tHeader">Amount</th>
-  //         <th className = "tHeader">Payment Type</th>
-  //         <th className = "tHeader">Payment Location</th>
-  //         <th className = "tHeader">View/Print</th>
-  //       </tr>
-  //     </thead>
-  //     <tbody>
-  //       {this.props.paymentHistoryArray.map((paymentItem, index)=>{
-  //         return (
-  //           <tr className = 'tRow' key = {index}>
-  //             <td className = "tData">{paymentItem.date}</td>
-  //             <td className = "tData">{paymentItem.amount}</td>
-  //             <td className = "tData">{paymentItem.type}</td>
-  //             <td className = "tData">{paymentItem.location}</td>
-  //             <td
-  //               className = "tData"
-  //               onClick = {()=>{this.props.paymentOnClick(paymentItem.receipt)}}
-  //               >
-  //                 View Print
-  //             </td>
-  //           </tr>
-  //         )})}
-  //     </tbody>
-  //     </table>
-  //   )
-  // }
-
-  // splicePaymentHistory(){
-  //   const payHistory = this.props.paymentHistoryArray;
-  //     const division = payHistory.length/20
-  //     const modulo = payHistory.length%20
-  //     const wholeDiv = Math.floor(division)
-  //   console.log(wholeDiv, division, modulo)
-  // }
-  // getRows(){
-  //   return this.props.paymentHistoryArray.map((paymentItem, index)=>{
-  //         return (
-  //           <tr className = 'tRow' key = {index}>
-  //             <td className = "tData">{paymentItem.date}</td>
-  //             <td className = "tData">{paymentItem.amount}</td>
-  //             <td className = "tData">{paymentItem.type}</td>
-  //             <td className = "tData">{paymentItem.location}</td>
-  //             <td
-  //               className = "tData"
-  //               onClick = {()=>{this.props.paymentOnClick(paymentItem.receipt)}}
-  //               >
-  //                 View Print
-  //             </td>
-  //           </tr>
-  //         )})
-  // }
+  renderRecieptButton(data){
+    return (
+      <div
+       className='recieptButton'
+       onClick= {()=>{console.log(data)}}
+      >
+      <SvgIcon
+          iconName= 'print'
+          iconSize= '24px'
+          iconFill= "#000"
+        />
+      </div>
+    )
+  }
 
   renderTable(){
+    const currentAccount= this.props.accountInfo[this.state.activeAccount];
 
     return (
       <AutoSizer disableHeight>
       {({width})=>{
         return (
           <Table
-            rowGetter = {({ index }) => this.props.paymentHistoryArray[index]}
+            rowGetter = {({ index }) => currentAccount.payment_history[index]}
             width = {width-17}
             rowHeight = {48}
             height = {350}
-            rowCount = {this.props.paymentHistoryArray.length}
+            rowCount = {currentAccount.payment_history.length}
             className = "payHisTable"
             headerClassName = "tHeader"
             headerHeight = {48}
@@ -103,33 +66,34 @@ class PaymentHistoryRoute extends Component {
           >
           <Column
             label="Payment Date"
-            dataKey="date"
+            dataKey="PmtDate"
             className="tColumn"
             width = {width/5}
           />
           <Column
             label="Amount"
-            dataKey="amount"
+            dataKey="TotalApplied"
             className="tColumn"
             width = {width/5}
           />
           <Column
             label="Payment Type"
-            dataKey="type"
+            dataKey="PAIDBY"
             className="tColumn"
             width = {width/5}
           />
           <Column
             label="Payment Location"
-            dataKey="location"
+            dataKey="PAIDIN"
             className="tColumn"
             width = {width/5}
           />
           <Column
             label="View/Print"
-            dataKey="receipt"
+            dataKey='print'
             className="tColumn"
             width = {width/5}
+            cellRenderer={(cell) => (this.renderRecieptButton(cell.rowData))}
           />
           </Table>
         )
@@ -137,6 +101,15 @@ class PaymentHistoryRoute extends Component {
 
       </AutoSizer >
     )
+  }
+
+  changeIndex(event){
+    const newIndex = event.target.value;
+    if(newIndex !== this.state.activeAccount){
+      this.setState((prevState)=>{
+        return {...prevState, activeAccount: newIndex}
+     });
+    }
   }
 
   render() {
@@ -147,6 +120,21 @@ class PaymentHistoryRoute extends Component {
       >div {
         display: flex;
         width: calc(100% - 20px);
+      }
+      .recieptButton.recieptButton{
+        &:hover{
+          .printPath.printPath{
+            fill: #ED1C24
+          }
+        }
+      }
+      .changeAccount.changeAccount {
+        padding: 5px;
+        display: flex;
+        width: 100%;
+        height: 48px;
+        font-size: 1em;
+        margin-bottom: 10px;
       }
       > h2 {
         align-self: flex-start;
@@ -206,8 +194,20 @@ class PaymentHistoryRoute extends Component {
     return (
       <PaymentDiv>
         <h2>Payment History</h2>
+          <select className="changeAccount" value={this.state.activeAccount} onChange = {this.changeIndex}>
+            {
+              this.props.accountInfo.map((item, index)=>{
+                return (
+                  <option value= {index} key = {index}>
+                    {`${item.AccountText}`}
+                  </option>
+                )
+              })
+            }
+          </select>
+
         {
-          this.props.paymentHistoryArray.length > 1 ? this.renderTable() :
+          this.props.accountInfo[this.state.activeAccount].payment_history.length > 1 ? this.renderTable() :
           (<h3> No Payments have been made on this Account</h3>)
         }
       </PaymentDiv>
@@ -217,7 +217,7 @@ class PaymentHistoryRoute extends Component {
 const hocComponent = compose( connect((state, props)=>{
     return ({
       paymentOnClick: (e)=>{console.log(e)},
-      paymentHistoryArray: state.main.paymentHistory
+      accountInfo: state.main.accountInformation
     });
 }));
 

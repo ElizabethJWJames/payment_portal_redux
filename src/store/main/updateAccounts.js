@@ -6,12 +6,12 @@ import actions, { auto } from '../../redux-auto/index.js';
 auto.settings({smartActions:true})
 
 export function pending (store, creds){
-  console.log('pending updateAccounts', store, creds)
+  //console.log('pending updateAccounts', store, creds)
   return store
 }
 
 export function fulfilled (store, accountObj, serverPosts){
-  console.log('fulfilled updateAccounts', store, accountObj, serverPosts)
+  //console.log('fulfilled updateAccounts', store, accountObj, serverPosts)
   /*
     compare the record,
     update the record if it exists,
@@ -33,7 +33,7 @@ export function rejected (store, auth, error){
 }
 
 export function action (accountObj, store){
-  console.log('action updateAccounts', accountObj, store)
+  //console.log('action updateAccounts', accountObj, store)
   /*
   call the record
   */

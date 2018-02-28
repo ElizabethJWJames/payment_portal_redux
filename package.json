@@ -37,10 +37,10 @@
     "deploy": "gh-pages -d build"
   },
   "devDependencies": {
+    "gh-pages": "*",
     "react-redux": "^5.0.6",
     "redux-devtools": "^3.4.1",
-    "webpack-dev-server": "^2.11.1",
-    "gh-pages": "*"
+    "webpack-dev-server": "^2.11.1"
   },
   "proxy": "http://localhost:85/payment_portal"
 }

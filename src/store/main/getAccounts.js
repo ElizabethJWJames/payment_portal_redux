@@ -18,7 +18,7 @@ export function fulfilled (store, auth, serverPosts){
 }
 
 fulfilled.chain = (store, auth, serverPosts) => {
-  console.log('ccccchain', store, auth, serverPosts);
+  //console.log('ccccchain', store, auth, serverPosts);
   return serverPosts.map((accountObj, index)=>{
     //console.log('serverPosts map', accountObj, index)
     actions.main.updateAccounts(accountObj, store);

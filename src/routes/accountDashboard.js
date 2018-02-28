@@ -11,6 +11,7 @@ import {
     AccordionItemTitle,
     AccordionItemBody,
 } from 'react-accessible-accordion';
+import SvgIcon from './../components/openIconicSvgs/svgIcon.js';
 
 //0a1f44
 class DashboardRoute extends Component {
@@ -27,6 +28,8 @@ class DashboardRoute extends Component {
       this.renderLoanInfo = this.renderLoanInfo.bind(this);
       this.renderAccordians = this.renderAccordians.bind(this);
       this.renderTable = this.renderTable.bind(this);
+      this.renderEditCardButton = this.renderEditCardButton.bind(this)
+      this.renderDeleteCardButton = this.renderDeleteCardButton.bind(this)
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -49,7 +52,7 @@ class DashboardRoute extends Component {
         {`Account: ${accountItem.AccountText}`}
         </h2>
         <p>
-          This is the current information that we have on-file. If this information is not correct please contact Training Solutions CAC/EFI at (941) 219-4344
+          This is the current information that we have on-file. If this information is not correct please contact {accountItem.company_info.LegalName} at {accountItem.company_info.ContactPhone}
           </p>
           <select className="changeAccount" value={this.state.activeAccount} onChange = {this.changeIndex}>
             {
@@ -86,6 +89,35 @@ class DashboardRoute extends Component {
         </div>
         <div className = "changePassword">
         </div>
+      </div>
+    )
+  }
+
+  renderEditCardButton(data){
+    return (
+      <div
+       className='editCardButton'
+       onClick= {()=>{console.log(data)}}
+      >
+      <SvgIcon
+          iconName= 'pencil'
+          iconSize= '24px'
+          iconFill= "#000"
+        />
+      </div>
+    )
+  }
+  renderDeleteCardButton(data){
+    return (
+      <div
+       className='deleteCardButton'
+       onClick= {()=>{console.log(data)}}
+      >
+      <SvgIcon
+          iconName= 'trash'
+          iconSize= '24px'
+          iconFill= "#000"
+        />
       </div>
     )
   }
@@ -132,12 +164,14 @@ class DashboardRoute extends Component {
             dataKey="edit"
             className="tColumn"
             width = {width/6}
+            cellRenderer={(cell) => (this.renderEditCardButton(cell.rowData))}
           />
           <Column
             label="Delete"
             dataKey="delete"
             className="tColumn"
             width = {width/6}
+            cellRenderer={(cell) => (this.renderDeleteCardButton(cell.rowData))}
           />
           </Table>
         )
@@ -203,28 +237,22 @@ class DashboardRoute extends Component {
           <div>
             <p><b>Loss Payee:</b></p>
             <p>{
-              'Training Solutions CAC/EFI'
-              // accountItem.company_info.LegalName
+               accountItem.company_info.LegalName
             }</p>
             <p>{
-              '123 Main Street'
-              // accountItem.company_info.Address
+               accountItem.company_info.Address
             }</p>
             <p>{
-              'Bradenton, FL 34205'
-              // `${accountItem.company_info.City} ${accountItem.company_info.State}, ${accountItem.company_info.Zip}`
+               `${accountItem.company_info.City} ${accountItem.company_info.State}, ${accountItem.company_info.Zip}`
             }</p>
             <p>Phone: {
-              '(941) 219-4344'
-              // accountItem.company_info.ContactPhone
+               accountItem.company_info.ContactPhone
             }</p>
             <p>Fax: {
-              '(941) 219-4344'
-              // accountItem.company_info.Fax
+               accountItem.company_info.Fax
             }</p>
             <p>Email: {
-              'virginia@mycarafc.com'
-              // accountItem.company_info.ContactEmail
+               accountItem.company_info.ContactEmail
             }</p>
           </div>
         </div>
@@ -320,6 +348,24 @@ class DashboardRoute extends Component {
       text-align: left;
       > h2 {
         color: #0a1f44
+      }
+      .editCardButton.editCardButton{
+        justify-content: center;
+        display: flex;
+        &:hover{
+          .pencilPath.pencilPath{
+            fill: #777
+          }
+        }
+      }
+      .deleteCardButton.deleteCardButton{
+        justify-content: center;
+        display: flex;
+        &:hover{
+          .trashPath.trashPath{
+            fill: #ED1C24
+          }
+        }
       }
       .currentAccount.currentAccount {
         color: #0a1f44
@@ -458,8 +504,7 @@ class DashboardRoute extends Component {
 const hocComponent = compose( connect((state, props)=>{
   console.log(state.main)
     return ({
-      accountInformation: state.main.accountInformation,
-      cardsOnFile: state.main.cardsOnFile
+      accountInformation: state.main.accountInformation
     });
 }));
 

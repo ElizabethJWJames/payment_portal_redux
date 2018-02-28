@@ -13,11 +13,15 @@ class Login extends Component {
   }
 
   static propTypes = {
-    onLoginSubmit: PropTypes.func
+    onLoginSubmit: PropTypes.func,
+    onForgotPasswordClick: PropTypes.func,
+    onRegisterClick: PropTypes.func
   }
 
   static defaultProps = {
-    onLoginSubmit: (x)=>{console.log(x)}
+    onLoginSubmit: (x)=>{console.log(x)},
+    onForgotPasswordClick: (x)=>{console.log(x)},
+    onRegisterClick: (x)=>{console.log(x)}
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -36,6 +40,14 @@ class Login extends Component {
         border-top-left-radius: 10px;
         margin: 0px;
         padding: 5px 0px;
+      }
+      .loginlinks.loginlinks {
+        color: #0a1f44;
+        cursor: pointer;
+      }
+      .loginlinks.loginlinks:hover {
+        color: #ED1C24;
+        cursor: pointer;
       }
       > form {
         border: 1px solid #0a1f44;
@@ -95,8 +107,18 @@ class Login extends Component {
 
               <Text className = 'loginInput' type = 'password' field="password" id="password" placeholder = "Password"/>
               <div className = 'formRow'>
-                <a>Register</a>
-                <a>Forgot Password</a>
+                <a
+                  onClick = {this.props.onRegisterClick}
+                  className = 'loginlinks'
+                >
+                    Register
+                  </a>
+                <a
+                  onClick = {this.props.onForgotPasswordClick}
+                  className = 'loginlinks'
+                >
+                    Forgot Password
+                  </a>
               </div>
               <div className = 'formRow'>
                 <div>
