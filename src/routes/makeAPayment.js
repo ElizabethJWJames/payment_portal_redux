@@ -5,6 +5,12 @@ import styled, { css } from 'styled-components';
 import { Form, Text, TextArea, Select } from 'react-form';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
+import {
+    Accordion,
+    AccordionItem,
+    AccordionItemTitle,
+    AccordionItemBody,
+} from 'react-accessible-accordion';
 
 //0a1f44
 class PayMeRoute extends Component {
@@ -16,6 +22,7 @@ class PayMeRoute extends Component {
       this.changeIndex = this.changeIndex.bind(this);
       this.cardOptions = this.cardOptions.bind(this);
       this.renderAccountSelect = this.renderAccountSelect.bind(this);
+      this.renderPaymentDetails = this.renderPaymentDetails.bind(this);
   }
 
   static propTypes = {
@@ -50,24 +57,28 @@ class PayMeRoute extends Component {
     })
   }
 
-  // renderPaymentDetails(){
-  //   return (
-  //     <Accordion
-  //         activeItems = {[0]}
-  //       >
-  //         <AccordionItem
-  //           key = {index}
-  //         >
-  //            <AccordionItemTitle>
-  //                {item.title}
-  //            </AccordionItemTitle>
-  //            <AccordionItemBody>
-  //                {item.body}
-  //            </AccordionItemBody>
-  //          </AccordionItem>
-  //     </Accordion>
-  //   )
-  // }
+  renderPaymentDetails(){
+    const accountItem = this.props.accountInformation[this.state.activeAccount];
+    const accountPaymentInfo = accountItem.payment_info
+    return (
+      <Accordion>
+          <AccordionItem>
+             <AccordionItemTitle>
+                 <h3>Payment Details</h3>
+             </AccordionItemTitle>
+             <AccordionItemBody>
+              <p><b>Last Amount Paid:</b> {accountPaymentInfo.vlastPmtAmt}</p>
+              <p><b>Last Date Paid:</b> {accountPaymentInfo.vLastPmtPaid}</p>
+              <p><b>Car Payment:</b> {accountPaymentInfo.vPMTDUE}</p>
+              <p><b>Late Charges:</b> {accountPaymentInfo.vLCDUE}</p>
+              <p><b>NFS Due:</b> {accountPaymentInfo.vNSFDue}</p>
+              <p><b>Side Notes:</b> {accountPaymentInfo.vMISCDUE}</p>
+              <p><b>CPI Premium:</b> {accountPaymentInfo.CPIDueNow}</p>
+             </AccordionItemBody>
+           </AccordionItem>
+      </Accordion>
+    )
+  }
 
   renderAccountSelect(){
     return (
@@ -165,6 +176,62 @@ class PayMeRoute extends Component {
         display: flex;
         flex-direction: column;
       }
+      .accordion__title {
+        color: #fff;
+        background: #0a1f44;
+        padding: 5px;
+        display: flex;
+        border-top-right-radius: 10px;
+        border-top-left-radius: 10px;
+        margin-top: 10px;
+      }
+      .accordion__item {
+        margin-bottom: 10px
+      }
+      .accordion__title > h3 {
+        margin: 0px
+      }
+      .accordion__body {
+          display: block;
+          animation: fadein .35s ease-in;
+          border: 1px solid #0a1f44;
+          padding: 10px
+      }
+      .accordion__body--hidden {
+          display: none;
+          opacity: 0;
+          animation: fadein .35s ease-in;
+      }
+
+      @keyframes fadein {
+          0% {
+              opacity: 0;
+          }
+
+          100% {
+              opacity: 1;
+          }
+      }
+
+      @-webkit-keyframes fadein {
+          0% {
+              opacity: 0;
+          }
+
+          100% {
+              opacity: 1;
+          }
+      }
+
+      @-moz-keyframes fadein {
+          0% {
+              opacity: 0;
+          }
+
+          100% {
+              opacity: 1;
+          }
+      }
       ${props => css`${this.props.defaultCompStyle}`}
     `;
 
@@ -208,6 +275,7 @@ class PayMeRoute extends Component {
                 </form>
               )}
             </Form>
+            {this.renderPaymentDetails()}
           </div>
       </PaymentDiv>
     );

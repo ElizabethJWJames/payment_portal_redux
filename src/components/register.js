@@ -117,7 +117,7 @@ class NewAccountForm extends Component {
                 type = 'text'
                 field="name"
                 id="name"
-                placeholder = "Full Name on Card"
+                placeholder = "Full Name"
                 required
               />
             <Text
@@ -127,6 +127,7 @@ class NewAccountForm extends Component {
                 id="SSN"
                 placeholder = "Full SSN (123-45-6789)"
                 required
+                pattern = "^(?!000|666)(?:[0-6][0-9]{2}|7(?:[0-6][0-9]|7[0-2]))-(?!00)[0-9]{2}-(?!0000)[0-9]{4}$"
               />
             <Text
                 className = 'registrationInput'
@@ -135,6 +136,7 @@ class NewAccountForm extends Component {
                 id="DOB"
                 placeholder = "Enter Date of Birth (MM/DD/YYYY)"
                 required
+                pattern = "^[0-3]?[0-9].[0-3]?[0-9].(?:[0-9]{2})?[0-9]{2}$"
               />
             <Text
                 className = 'registrationInput'
@@ -143,6 +145,8 @@ class NewAccountForm extends Component {
                 id="regEmail"
                 placeholder = "Email"
                 required
+                pattern = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$"
+                title = "Please Input a Valid Email"
               />
             <Text
                 className = 'registrationInput'
@@ -151,6 +155,8 @@ class NewAccountForm extends Component {
                 id="regPassword"
                 placeholder = "Password"
                 required
+                pattern = ".{6,}"
+                title = "Please Input Password of 6 or more Characters"
               />
             <Text
                 className = 'registrationInput'
@@ -159,6 +165,8 @@ class NewAccountForm extends Component {
                 id="confirmPassword"
                 placeholder = "Confirm Password"
                 required
+                pattern = ".{6,}"
+                title = "Please Input Password of 6 or more Characters"
               />
 
             <button className="registerSubmit" type="submit">Submit</button>

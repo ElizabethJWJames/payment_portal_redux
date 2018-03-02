@@ -49,11 +49,17 @@ export default function app(app={} , action) {
     switch (action.type) {
       case '@@redux/INIT':
       {
-        return {
-          // main: {},
-          navigation: nav,
-          history: history
-        };
+        const localapp = JSON.parse(localStorage.getItem('store'));
+        let newStore;
+        if(localapp !== null){
+          newStore = localapp;
+        } else {
+          newStore = {
+            navigation: nav,
+            history: history
+          };
+        }
+        return newStore;
       }
       case 'AUTH':
       {
@@ -94,8 +100,19 @@ export default function app(app={} , action) {
       }
       case 'PAGEPUSH':
       {
+        localStorage.setItem('store', JSON.stringify(app));
         history.push(action.payload.pageToPush);
         return app;
+      }
+      case 'LOGOUT':
+      {
+        localStorage.removeItem('store')
+        const newStore = {
+          navigation: nav,
+          history: history
+        };
+        history.push('/home');
+        return newStore;
       }
       default:
       {

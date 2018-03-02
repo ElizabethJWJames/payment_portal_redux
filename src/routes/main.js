@@ -6,6 +6,7 @@ import { fromJS } from 'immutable';
 
 import SvgIcon from './../components/openIconicSvgs/svgIcon.js';
 import NavigationBar from './../components/navigation/navigationBar.js';
+import actions from '../redux-auto/index.js';
 import HomeRoute from './homeRoute.js';
 import ContactUsRoute from './contactUsRoute.js';
 import DashboardRoute from './accountDashboard.js';
@@ -70,7 +71,7 @@ class Main extends Component {
       myReturn = (
         <div
          className='loginButton'
-         onClick= {(item)=>{this.props.history.push('/home');}}
+         onClick= {(item)=>{actions.main.logout(item)}}
         >
         <SvgIcon
             iconName= 'accountLogout'

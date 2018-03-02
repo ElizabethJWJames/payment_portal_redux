@@ -31,7 +31,7 @@ class HomeRoute extends Component {
   }
   onRegisterSubmit(values){
     //actions.main.signIn(values)
-    //actions.main.auth(values)
+    actions.main.sendRegistrationEmail(values)
     console.log(values)
   }
   onForgotSubmit(values){

@@ -92,6 +92,8 @@ class ContactUsForm extends Component {
                 id="email"
                 required
                 placeholder = "Email Address (required)"
+                pattern = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$"
+                title = "Please Input a Valid Email"
               />
             <Text
                 className = 'contactInput'
@@ -100,6 +102,8 @@ class ContactUsForm extends Component {
                 id="phone"
                 required
                 placeholder = "Phone (required)"
+                pattern = "^(\+0?1\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$"
+                title = "Please Input a Valid Phone Number (###-###-####)"
               />
             <Text
                 className = 'contactInput'
