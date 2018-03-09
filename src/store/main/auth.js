@@ -11,10 +11,13 @@ export function pending (store, creds){
 }
 
 export function fulfilled (store, creds, serverPosts){
-  //console.log('fulfilled', store, creds, serverPosts)
+  console.log('fulfilled', store, creds, serverPosts)
     const accessToken = serverPosts.access_token;
+    if(accessToken){
+      return app(store, {type: 'AUTH', payload: {authtoken: accessToken, creds: creds}})
+    }
     //app(store, {type: 'AUTH', payload: {authtoken: accessToken}})
-  return app(store, {type: 'AUTH', payload: {authtoken: accessToken}})
+
 }
 
 fulfilled.chain = (store, creds, serverPosts) => {
@@ -36,7 +39,7 @@ export function action (creds, store){
         'Accept': 'application/json',
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: "username="+creds.submittedValues.email+"&password="+creds.submittedValues.password
+      body: "username="+creds.email+"&password="+creds.password
       //method: "GET"
     })
  //return store

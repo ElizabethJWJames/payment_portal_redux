@@ -16,9 +16,9 @@ class HomeRoute extends Component {
         modalIsOpen: false,
         displayInModal: 'div',
       };
-      this.openModal = this.openModal.bind(this);
-      this.closeModal = this.closeModal.bind(this);
-      this.renderModalContent = this.renderModalContent.bind(this);
+      // this.openModal = this.openModal.bind(this);
+      // this.closeModal = this.closeModal.bind(this);
+      // this.renderModalContent = this.renderModalContent.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -29,56 +29,57 @@ class HomeRoute extends Component {
     //actions.main.signIn(values)
     actions.main.auth(values)
   }
-  onRegisterSubmit(values){
-    //actions.main.signIn(values)
-    actions.main.sendRegistrationEmail(values)
-    console.log(values)
-  }
-  onForgotSubmit(values){
-    //actions.main.signIn(values)
-    //actions.main.auth(values)
-    console.log(values)
-  }
-
+  // onRegisterSubmit(values){
+  //   //actions.main.signIn(values)
+  //   actions.main.initiateRegistration(values)
+  //   console.log(values)
+  // }
+  // onForgotSubmit(values){
+  //   //actions.main.signIn(values)
+  //   //actions.main.auth(values)
+  //   console.log(values)
+  // }
+  //
   openModal(displayComponent){
-      this.setState((prevState)=>{
-        return {...prevState, modalIsOpen: true, displayInModal: displayComponent}
-     });
+    return actions.main.updateModalContent({displayComponent: displayComponent})
+        //return {...prevState, modalIsOpen: true, displayInModal: displayComponent}
   }
+  //
+  // closeModal(){
+  //     this.setState((prevState)=>{
+  //       return {...prevState, modalIsOpen: false, displayInModal: 'div'}
+  //    });
+  // }
 
-  closeModal(){
-      this.setState((prevState)=>{
-        return {...prevState, modalIsOpen: false, displayInModal: 'div'}
-     });
-  }
-
-  renderModalContent(){
-    let display = (<div/>);
-    switch(this.state.displayInModal) {
-      case 'ForgotPasswordForm': {
-        display= (
-          <ForgotPasswordForm
-            onFormSubmit = {this.onForgotSubmit}
-          />
-        )
-        break;
-      }
-      case 'NewAccountForm': {
-        display= (
-          <NewAccountForm
-            onFormSubmit = {this.onRegisterSubmit}
-          />
-        )
-        break;
-      }
-      default: {
-        display = (
-          <div/>
-        )
-      }
-    }
-    return display;
-  }
+  // renderModalContent(){
+  //   let display = (<div/>);
+  //   switch(this.state.displayInModal) {
+  //     case 'ForgotPasswordForm': {
+  //       display= (
+  //         <ForgotPasswordForm
+  //           onFormSubmit = {this.onForgotSubmit}
+  //           closeModalCB = {this.closeModal}
+  //         />
+  //       )
+  //       break;
+  //     }
+  //     case 'NewAccountForm': {
+  //       display= (
+  //         <NewAccountForm
+  //           onFormSubmit = {this.onRegisterSubmit}
+  //           closeModalCB = {this.closeModal}
+  //         />
+  //       )
+  //       break;
+  //     }
+  //     default: {
+  //       display = (
+  //         <div/>
+  //       )
+  //     }
+  //   }
+  //   return display;
+  // }
 
   render() {
     const HomeDiv = styled.div`
@@ -186,16 +187,7 @@ class HomeRoute extends Component {
     };
     return (
       <HomeDiv>
-        <Modal
-            isOpen={this.state.modalIsOpen}
-            onRequestClose={this.closeModal}
-            contentLabel= {this.state.displayInModal}
-            style = {customStyles}
-          >
-          {
-            this.renderModalContent()
-          }
-          </Modal>
+
         <div className = 'welcome'>
           <img
               src={cppWomen}

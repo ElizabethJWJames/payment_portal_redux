@@ -12,13 +12,18 @@ import {
     AccordionItemBody,
 } from 'react-accessible-accordion';
 import SvgIcon from './../components/openIconicSvgs/svgIcon.js';
+import NewPasswordForm from '../components/newPassword.js';
+import Alert from '../components/alert.js';
+import Modal from 'react-modal';
 
 //0a1f44
 class DashboardRoute extends Component {
   constructor(props){
       super(props);
       this.state = {
-        activeAccount: 0
+        activeAccount: 0,
+        modalIsOpen: false,
+        displayInModal: 'div',
       };
       this.changeIndex = this.changeIndex.bind(this);
       this.renderAccountSummery = this.renderAccountSummery.bind(this);
@@ -30,6 +35,9 @@ class DashboardRoute extends Component {
       this.renderTable = this.renderTable.bind(this);
       this.renderEditCardButton = this.renderEditCardButton.bind(this)
       this.renderDeleteCardButton = this.renderDeleteCardButton.bind(this)
+      this.openModal = this.openModal.bind(this);
+      this.closeModal = this.closeModal.bind(this);
+      this.renderModalContent = this.renderModalContent.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -45,14 +53,41 @@ class DashboardRoute extends Component {
     }
   }
 
+  renderAlerts(){
+    let myReturn;
+
+    if(this.props.alerts && this.props.alerts.length >= 1){
+      return (
+        <div>
+          {
+            this.props.alerts.map((alertObj, index)=>{
+              console.log('AHHH', alertObj, index)
+              return (
+                <Alert
+                  key = {index}
+                  alertText = {alertObj.alertText}
+                  alertType = {alertObj.alertType}
+                  closeOnClick = {()=>{console.log('CLOSE')}}
+                />
+              )
+            })
+          }
+        </div>
+      )
+    }
+
+    return myReturn;
+  }
+
   renderAccountSummery(accountItem){
+    const companyInfo = accountItem && accountItem.company_info ? accountItem.company_info : {};
     return (
       <div className = "accountSummery">
         <h2 className = "currentAccount">
         {`Account: ${accountItem.AccountText}`}
         </h2>
         <p>
-          This is the current information that we have on-file. If this information is not correct please contact {accountItem.company_info.LegalName} at {accountItem.company_info.ContactPhone}
+          This is the current information that we have on-file. If this information is not correct please contact {companyInfo.LegalName} at {companyInfo.ContactPhone}
           </p>
           <select className="changeAccount" value={this.state.activeAccount} onChange = {this.changeIndex}>
             {
@@ -66,28 +101,36 @@ class DashboardRoute extends Component {
             }
           </select>
         <div className = "alerts">
+          {this.renderAlerts()}
         </div>
       </div>
     )
   }
 
   renderMyInformation(accountItem){
+    const personalDetails = accountItem && accountItem.personal_details ? accountItem.personal_details : {};
     return (
       <div className = "myInformation">
         <div className = "myDetails">
           <div className = "contactInfo">
             <h4>My Details</h4>
-            <p><b>Name:</b>{accountItem.personal_details.B_First + " " + accountItem.personal_details.B_Last }</p>
-            <p><b>Home:</b> {accountItem.personal_details.B_HPhone}</p>
-            <p><b>Cell:</b> {accountItem.personal_details.B_Cphone}</p>
+            <p><b>Name:</b>{personalDetails.B_First + " " + personalDetails.B_Last }</p>
+            <p><b>Home:</b> {personalDetails.B_HPhone}</p>
+            <p><b>Cell:</b> {personalDetails.B_Cphone}</p>
           </div>
           <div className='Address'>
             <h4>My Address</h4>
-            <p>{accountItem.personal_details.B_addr}</p>
-            <p>{`${accountItem.personal_details.B_city} ${accountItem.personal_details.B_State}, ${accountItem.personal_details.B_zip}`}</p>
+            <p>{personalDetails.B_addr}</p>
+            <p>{`${personalDetails.B_city} ${personalDetails.B_State}, ${personalDetails.B_zip}`}</p>
           </div>
         </div>
         <div className = "changePassword">
+          <div
+           className='changePasswordButton'
+           onClick= {()=>{this.openModal('NewPassword')}}
+          >
+            Change Password
+          </div>
         </div>
       </div>
     )
@@ -107,6 +150,7 @@ class DashboardRoute extends Component {
       </div>
     )
   }
+
   renderDeleteCardButton(data){
     return (
       <div
@@ -123,17 +167,17 @@ class DashboardRoute extends Component {
   }
 
   renderTable(accountItem){
-
+    const creditCards = accountItem && accountItem.credit_cards ? accountItem.credit_cards : []
     return (
       <AutoSizer disableHeight>
       {({width})=>{
         return (
           <Table
-            rowGetter = {({ index }) => accountItem.credit_cards[index]}
+            rowGetter = {({ index }) => creditCards[index]}
             width = {width-17}
             rowHeight = {48}
             height = {350}
-            rowCount = {accountItem.credit_cards.length}
+            rowCount = {creditCards.length}
             className = "cardsOnFileTable"
             headerClassName = "tHeader"
             headerHeight = {48}
@@ -194,65 +238,68 @@ class DashboardRoute extends Component {
   }
 
   renderVehicleInsurance(accountItem){
+    const vehicleInfo = accountItem && accountItem.vehicle_info ? accountItem.vehicle_info : {};
+    const vehicleInsurance = accountItem && accountItem.vehicle_insurnce ? accountItem.vehicle_insurnce : {};
+    const companyInfo = accountItem && accountItem.company_info ? accountItem.company_info : {};
     return (
       <div className = "vehicleInformation">
         <div className = "vehicle">
           <h4>Vehicle Information</h4>
-          <p><b>Stock:</b> {accountItem.vehicle_info.STOCKNUM}</p>
-          <p><b>Vin:</b> {accountItem.vehicle_info.VIN}</p>
-          <p><b>Year:</b> {accountItem.vehicle_info.YEAR}</p>
-          <p><b>Make:</b> {accountItem.vehicle_info.MAKE}</p>
-          <p><b>Model:</b> {accountItem.vehicle_info.MODEL}</p>
-          <p><b>Trim:</b> {accountItem.vehicle_info.TRIM}</p>
-          <p><b>Type:</b> {accountItem.vehicle_info.BodyStyle}</p>
-          <p><b>Color:</b> {accountItem.vehicle_info.COLOR}</p>
-          <p><b>Miles:</b> {accountItem.vehicle_info.MILESOUT}</p>
+          <p><b>Stock:</b> {vehicleInfo.STOCKNUM}</p>
+          <p><b>Vin:</b> {vehicleInfo.VIN}</p>
+          <p><b>Year:</b> {vehicleInfo.YEAR}</p>
+          <p><b>Make:</b> {vehicleInfo.MAKE}</p>
+          <p><b>Model:</b> {vehicleInfo.MODEL}</p>
+          <p><b>Trim:</b> {vehicleInfo.TRIM}</p>
+          <p><b>Type:</b> {vehicleInfo.BodyStyle}</p>
+          <p><b>Color:</b> {vehicleInfo.COLOR}</p>
+          <p><b>Miles:</b> {vehicleInfo.MILESOUT}</p>
         </div>
         <div className = "insurance">
           <h4>Insurance Information</h4>
-          <p><b>Company: </b> {accountItem.vehicle_insurnce.InsCName}</p>
-          <p><b>Street: </b> {accountItem.vehicle_insurnce.InsCAddr}</p>
-          <p><b>City: </b> {accountItem.vehicle_insurnce.InsCCity}</p>
-          <p><b>State: </b> {accountItem.vehicle_insurnce.InsCState}</p>
-          <p><b>Zip: </b> {accountItem.vehicle_insurnce.InsCZip}</p>
-          <p><b>Phone: </b> {accountItem.vehicle_insurnce.InsPhone}</p>
-          <p><b>Fax: </b> {accountItem.vehicle_insurnce.InsFax}</p>
-          <p><b>Contact: </b> {accountItem.vehicle_insurnce.InsCPerson}</p>
-          <p><b>Contact Phone: </b> {accountItem.vehicle_insurnce.InsCPhone}</p>
-          <p><b>Contact Fax: </b> {accountItem.vehicle_insurnce.InsCFax}</p>
-          <p><b>Email: </b> {accountItem.vehicle_insurnce.InsEmail}</p>
-          <p><b>Required: </b> {accountItem.vehicle_insurnce.Insreq}</p>
-          <p><b>Policy No: </b> {accountItem.vehicle_insurnce.inspolicynum}</p>
-          <p><b>Expiration Date: </b> {accountItem.vehicle_insurnce.InsExpire}</p>
-          <p><b>Canceled: </b> {accountItem.vehicle_insurnce.InsCancelled}</p>
-          <p><b>Cancellation Date: </b> {accountItem.vehicle_insurnce.InsCanDate}</p>
-          <p><b>Coverage: </b> {accountItem.vehicle_insurnce.InsCoverage}</p>
-          <p><b>Comp Deduction: </b> {accountItem.vehicle_insurnce.InsCompDed}</p>
-          <p><b>Fire Theft: </b> {accountItem.vehicle_insurnce.InsFireDed}</p>
-          <p><b>CPI Option: </b> {accountItem.vehicle_insurnce.OnCPI}</p>
-          <p><b>CPI Status: </b> {accountItem.vehicle_insurnce.CPIStatus}</p>
+          <p><b>Company: </b> {vehicleInsurance.InsCName}</p>
+          <p><b>Street: </b> {vehicleInsurance.InsCAddr}</p>
+          <p><b>City: </b> {vehicleInsurance.InsCCity}</p>
+          <p><b>State: </b> {vehicleInsurance.InsCState}</p>
+          <p><b>Zip: </b> {vehicleInsurance.InsCZip}</p>
+          <p><b>Phone: </b> {vehicleInsurance.InsPhone}</p>
+          <p><b>Fax: </b> {vehicleInsurance.InsFax}</p>
+          <p><b>Contact: </b> {vehicleInsurance.InsCPerson}</p>
+          <p><b>Contact Phone: </b> {vehicleInsurance.InsCPhone}</p>
+          <p><b>Contact Fax: </b> {vehicleInsurance.InsCFax}</p>
+          <p><b>Email: </b> {vehicleInsurance.InsEmail}</p>
+          <p><b>Required: </b> {vehicleInsurance.Insreq}</p>
+          <p><b>Policy No: </b> {vehicleInsurance.inspolicynum}</p>
+          <p><b>Expiration Date: </b> {vehicleInsurance.InsExpire}</p>
+          <p><b>Canceled: </b> {vehicleInsurance.InsCancelled}</p>
+          <p><b>Cancellation Date: </b> {vehicleInsurance.InsCanDate}</p>
+          <p><b>Coverage: </b> {vehicleInsurance.InsCoverage}</p>
+          <p><b>Comp Deduction: </b> {vehicleInsurance.InsCompDed}</p>
+          <p><b>Fire Theft: </b> {vehicleInsurance.InsFireDed}</p>
+          <p><b>CPI Option: </b> {vehicleInsurance.OnCPI}</p>
+          <p><b>CPI Status: </b> {vehicleInsurance.CPIStatus}</p>
         </div>
         <div>
           <p>Please provide the following information to your insurance company to list us as a Loss Payee on your policy:</p>
           <div>
             <p><b>Loss Payee:</b></p>
             <p>{
-               accountItem.company_info.LegalName
+               companyInfo.LegalName
             }</p>
             <p>{
-               accountItem.company_info.Address
+               companyInfo.Address
             }</p>
             <p>{
-               `${accountItem.company_info.City} ${accountItem.company_info.State}, ${accountItem.company_info.Zip}`
+               `${companyInfo.City} ${companyInfo.State}, ${companyInfo.Zip}`
             }</p>
             <p>Phone: {
-               accountItem.company_info.ContactPhone
+               companyInfo.ContactPhone
             }</p>
             <p>Fax: {
-               accountItem.company_info.Fax
+               companyInfo.Fax
             }</p>
             <p>Email: {
-               accountItem.company_info.ContactEmail
+               companyInfo.ContactEmail
             }</p>
           </div>
         </div>
@@ -261,32 +308,33 @@ class DashboardRoute extends Component {
   }
 
   renderLoanInfo(accountItem){
+    const accountInfo = accountItem && accountItem.account_info ? accountItem.account_info : {};
     return (
       <div className = "loanInfo">
         <div className = "loan">
           <h4>Account Information (Loan)</h4>
-          <p><b>Sold: </b> {accountItem.account_info.SALEDATE}</p>
-          <p><b>Amount: </b> {accountItem.account_info.loanAmount}</p>
-          <p><b>Interest: </b> {accountItem.account_info.loanInterest}</p>
+          <p><b>Sold: </b> {accountInfo.SALEDATE}</p>
+          <p><b>Amount: </b> {accountInfo.loanAmount}</p>
+          <p><b>Interest: </b> {accountInfo.loanInterest}</p>
         </div>
         <div className = "loanRepaymentSchedule">
           <h4>Repayment Schedule:</h4>
-          <p>{accountItem.account_info.plan1}</p>
+          <p>{accountInfo.plan1}</p>
           <div className = "balance">
-            <p><b>Sidenote Balance: </b> {accountItem.account_info.snBalance}</p>
-            <p><b>Principle Balance: </b> {accountItem.account_info.prinbal}</p>
-            <p><b>Accrued Intrest: </b> {accountItem.account_info.ACCRUEDINT}</p>
+            <p><b>Sidenote Balance: </b> {accountInfo.snBalance}</p>
+            <p><b>Principle Balance: </b> {accountInfo.prinbal}</p>
+            <p><b>Accrued Intrest: </b> {accountInfo.ACCRUEDINT}</p>
           </div>
           <div className = "lastPayment">
-            <p><b>Last Payment: </b> {accountItem.account_info.lastpmtamt + " on " + accountItem.account_info.LastPmtPaid}</p>
+            <p><b>Last Payment: </b> {accountInfo.lastpmtamt + " on " + accountInfo.LastPmtPaid}</p>
           </div>
           <div className = "due">
-            <p><b>Loan Payment: </b> {accountItem.account_info.pmtdue}</p>
-            <p><b>CP: </b> {accountItem.account_info.cpduenow}</p>
-            <p><b>Sidenote: </b> {accountItem.account_info.snDueNow}</p>
-            <p><b>NSF Fee: </b> {accountItem.account_info.nsfdue}</p>
-            <p><b>Late Fee: </b> {accountItem.account_info.LCDue}</p>
-            <p><b>Total Due: </b> <b>{accountItem.account_info.total}</b></p>
+            <p><b>Loan Payment: </b> {accountInfo.pmtdue}</p>
+            <p><b>CP: </b> {accountInfo.cpduenow}</p>
+            <p><b>Sidenote: </b> {accountInfo.snDueNow}</p>
+            <p><b>NSF Fee: </b> {accountInfo.nsfdue}</p>
+            <p><b>Late Fee: </b> {accountInfo.LCDue}</p>
+            <p><b>Total Due: </b> <b>{accountInfo.total}</b></p>
           </div>
         </div>
       </div>
@@ -297,19 +345,19 @@ class DashboardRoute extends Component {
     const account = accountInfo[activeState];
     const accountSections = [
       {
-        title: (<h3> My Information </h3>),
+        title: (<h3> <div className="accordion__arrow" role="presentation" /> My Information </h3>),
         body: this.renderMyInformation(account)
       },
       {
-        title: (<h3> Cards on File </h3>),
+        title: (<h3> <div className="accordion__arrow" role="presentation" /> Cards on File </h3>),
         body: this.renderCardInformation(account)
       },
       {
-        title: (<h3> Vehicle and Insurance </h3>),
+        title: (<h3> <div className="accordion__arrow" role="presentation" /> Vehicle and Insurance </h3>),
         body: this.renderVehicleInsurance(account)
       },
       {
-        title: (<h3> Loan Information </h3>),
+        title: (<h3> <div className="accordion__arrow" role="presentation" /> Loan Information </h3>),
         body: this.renderLoanInfo(account)
       }
     ];
@@ -324,7 +372,9 @@ class DashboardRoute extends Component {
             <AccordionItem
               key = {index}
             >
-               <AccordionItemTitle>
+               <AccordionItemTitle
+                hideBodyClassName = "accordion__title--hidden"
+               >
                    {item.title}
                </AccordionItemTitle>
                <AccordionItemBody>
@@ -338,6 +388,52 @@ class DashboardRoute extends Component {
     )
   }
 
+  openModal(displayComponent){
+      this.setState((prevState)=>{
+        return {...prevState, modalIsOpen: true, displayInModal: displayComponent}
+     });
+  }
+
+  closeModal(){
+      this.setState((prevState)=>{
+        return {...prevState, modalIsOpen: false, displayInModal: 'div'}
+     });
+  }
+
+  onNewPassSubmit(values){
+    //actions.main.signIn(values)
+    //actions.main.auth(values)
+    console.log(values)
+  }
+
+  renderModalContent(){
+    let display = (<div/>);
+    switch(this.state.displayInModal) {
+      case 'NewPassword': {
+        display= (
+          <NewPasswordForm
+            onFormSubmit = {this.onNewPassSubmit}
+            closeModalCB = {this.closeModal}
+          />
+        )
+        break;
+      }
+      case 'NewCard': {
+        display= (
+          <div
+          />
+        )
+        break;
+      }
+      default: {
+        display = (
+          <div/>
+        )
+      }
+    }
+    return display;
+  }
+
   render() {
     const DashboardDiv = styled.div`
       display: flex;
@@ -349,12 +445,65 @@ class DashboardRoute extends Component {
       > h2 {
         color: #0a1f44
       }
+      .modal.modal {
+        position: absolute;
+        display: block;
+        top: 40px;
+        left: 40px;
+        right: 40px;
+        bottom: 40px;
+        border: 1px solid rgb(204, 204, 204);
+        background: rgb(255, 255, 255);
+        overflow: auto;
+        border-radius: 4px;
+        outline: none;
+        padding: 0px;
+      }
+      .overlay.overlay {
+        position: fixed;
+        display: block;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+        background-color: rgba(255, 255, 255, 0.75);
+      }
+      > h3 {
+        display: flex;
+        align-self: flex-start;
+        color: #0a1f44;
+        background: #fff;
+        margin: 0px 0px -1px 0px;
+        border-top: 5px solid #0a1f44;
+        border-left: 1px solid #0a1f44;
+        border-right: 1px solid #0a1f44;
+        padding: 5px 10px;
+        z-index: 1
+      }
+      .changePasswordButton.changePasswordButton {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        align-self: flex-end;
+        margin-top: 10px;
+        border-radius: 5px;
+        padding: 10px;
+        height: 48px;
+        width: 250px;
+        font-size: 1.5em;
+        color: #fff;
+        border: none;
+        background:  #3d78d8;
+        :hover {
+          background: #2c5fb3;
+        }
+      }
       .editCardButton.editCardButton{
         justify-content: center;
         display: flex;
         &:hover{
           .pencilPath.pencilPath{
-            fill: #777
+            fill: #50D032
           }
         }
       }
@@ -390,7 +539,52 @@ class DashboardRoute extends Component {
         margin-bottom: 10px
       }
       .accordion__title > h3 {
-        margin: 0px
+        padding: 10px 0px 10px 40px;
+        margin: 0px;
+        position: relative;
+      }
+      .accordion__title--hidden {
+        background: #808080;
+        border-bottom-right-radius: 10px;
+        border-bottom-left-radius: 10px;
+        > h3 > .accordion__arrow {
+          transform: rotate(0deg);
+        }
+      }
+      .accordion__arrow.accordion__arrow {
+          display: inline-block;
+          position: absolute;
+          width: 24px;
+          height: 12px;
+          top: 15px;
+          left: 10px;
+          transform: rotate(-180deg);
+          &:after {
+              display: block;
+              position: absolute;
+              top: 50%;
+              width: 10px;
+              height: 2px;
+              background-color: currentColor;
+              content: '';
+          }
+          &:before {
+              display: block;
+              position: absolute;
+              top: 50%;
+              width: 10px;
+              height: 2px;
+              background-color: currentColor;
+              content: '';
+          }
+          &:after {
+              right: 4px;
+              transform: rotate(-45deg);
+          }
+          &:before {
+              left: 4px;
+              transform: rotate(45deg);
+          }
       }
       .accordion__body {
           display: block;
@@ -490,9 +684,34 @@ class DashboardRoute extends Component {
       ${props => css`${this.props.defaultCompStyle}`}
     `;
 
+    Modal.setAppElement('#root');
+
+    const customStyles = {
+      content : {
+        top                   : '40px',
+        left                  : '40px',
+        right                 : '40px',
+        bottom                : '40px',
+        padding               : '0px',
+      },
+      overlay : {
+        zIndex                : 10
+      }
+    };
+
     console.log(this);
     return (
       <DashboardDiv>
+        <Modal
+              isOpen={this.state.modalIsOpen}
+              onRequestClose={this.closeModal}
+              contentLabel= {this.state.displayInModal}
+              style = {customStyles}
+            >
+            {
+              this.renderModalContent()
+            }
+          </Modal>
         {
           this.renderAccordians(this.state.activeAccount, this.props.accountInformation)
         }
@@ -504,7 +723,8 @@ class DashboardRoute extends Component {
 const hocComponent = compose( connect((state, props)=>{
   console.log(state.main)
     return ({
-      accountInformation: state.main.accountInformation
+      accountInformation: state.main.accountInformation,
+      alerts: state.main.alerts
     });
 }));
 

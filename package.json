@@ -6,6 +6,7 @@
   "dependencies": {
     "history": "^4.7.2",
     "immutable": "^3.8.2",
+    "moment": "^2.21.0",
     "mysql": "^2.15.0",
     "object-merge": "^2.5.1",
     "prop-types": "^15.6.0",

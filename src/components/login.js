@@ -86,7 +86,10 @@ class Login extends Component {
         font-size: 1.5em;
         color: #fff;
         border: none;
-        background: #0a1f44;
+        background:  #3d78d8;
+        :hover {
+          background: #2c5fb3;
+        }
       }
       ${props => css`${this.props.defaultCompStyle}`}
     `;
@@ -97,7 +100,7 @@ class Login extends Component {
             Login
           </h2>
         <Form
-          onSubmit={submittedValues => this.props.onLoginSubmit( {submittedValues} )}
+          onSubmit={submittedValues => this.props.onLoginSubmit(submittedValues)}
           onSubmitFailure= {(e, x)=>{console.log(e, x)}}
         >
           { formApi => (

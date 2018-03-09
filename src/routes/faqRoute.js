@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { fromJS } from 'immutable';
 import styled, { css } from 'styled-components';
+import SvgIcon from './../components/openIconicSvgs/svgIcon.js';
+
 
 import {
     Accordion,
@@ -33,39 +35,48 @@ class FAQRoute extends Component {
   renderAccordianList(){
     const faqList = [
       {
-        title: (<h3> + My On-Line Account</h3>),
+        title: (
+          <h3>
+            <div className="accordion__arrow" role="presentation"/>
+            My On-Line Account
+           </h3>
+         ),
         body: (
           <div>
             <h4>
               How can I update my street address, phone number, or email address?
             </h4>
             <p>
-              Please login and access the Contact Us tab, Select 'Contact Information Change' from the 'What do you need help with?' subject drop down menu. You can call and or email a Autostart Customer Service representative at: (800) 555-1212.
+              To update your street address, phone number, email address or any other
+              information, please contact the AutoStart location where you purchased your vehicle.
             </p>
             <h4>
               How do I create an online account?
             </h4>
             <p>
-              To create an online account....
+              To create an online account, select the register link
+              in the upper right-hand corner of the mycarpay.com home page.
             </p>
             <h4>
               What can I access on my online account?
             </h4>
             <p>
-              Your online account gives you access to.....
+              Your online account allows you to make a vehicle payment
+              and view payment history, payment receipts, account information and insurance information.
             </p>
           </div>
         )
       },
       {
-        title: (<h3> + My Payments</h3>),
+        title: (<h3> <div className="accordion__arrow" role="presentation"/> My Payments</h3>),
         body: (
           <div>
             <h4>
               I am having trouble making my online payment, what should I do?
             </h4>
             <p>
-              If you are having trouble making your online payment call (800) 788-2056 during normal business hours, Monday-Saturday 9:00 a.m. to 6:00 p.m.
+              If you are having trouble making your online payment call (888) 888-1292 during normal
+              business hours, Monday through Friday 9:00 a.m. to 6:00 p.m. and Saturday 9:00 a.m. to 5:00 p.m.
             </p>
             <h4>
               Can I make a partial payment online?
@@ -77,14 +88,17 @@ class FAQRoute extends Component {
         )
       },
       {
-        title: (<h3> + My Vehicle</h3>),
+        title: (<h3> <div className="accordion__arrow" role="presentation"/> My Vehicle</h3>),
         body: (
           <div>
             <h4>
               My vehicle was in an accident, stolen, impounded, or repossessed, what do I do now?
             </h4>
             <p>
-              After you file a report with the proper authority or organization (i.e. police, auto insurance, etc.), please contact Autostart: (800) 555-5555 to be directed to the proper department.
+              After you file a report with the proper authority or organization
+              (i.e. police, auto insurance, etc.), please contact the AutoStart
+              location where you purchased your vehicle.  Please have your police
+              report number, insurance information and insurance claim number ready when you call.
             </p>
           </div>
         )
@@ -99,7 +113,9 @@ class FAQRoute extends Component {
           <AccordionItem
             key = {index}
           >
-             <AccordionItemTitle>
+             <AccordionItemTitle
+              hideBodyClassName = "accordion__title--hidden"
+             >
                  {item.title}
              </AccordionItemTitle>
              <AccordionItemBody>
@@ -131,11 +147,60 @@ class FAQRoute extends Component {
         border-top-right-radius: 10px;
         border-top-left-radius: 10px;
       }
+      .accordion__title--hidden {
+        background: #808080;
+        border-bottom-right-radius: 10px;
+        border-bottom-left-radius: 10px;
+        > h3 > .accordion__arrow {
+          transform: rotate(0deg);
+        }
+      }
+      .accordion__arrow.accordion__arrow {
+          display: inline-block;
+          position: absolute;
+          width: 24px;
+          height: 12px;
+          top: 15px;
+          left: 10px;
+          transform: rotate(-180deg);
+          &:after {
+              display: block;
+              position: absolute;
+              top: 50%;
+              width: 10px;
+              height: 2px;
+              background-color: currentColor;
+              content: '';
+          }
+          &:before {
+              display: block;
+              position: absolute;
+              top: 50%;
+              width: 10px;
+              height: 2px;
+              background-color: currentColor;
+              content: '';
+          }
+          &:after {
+              right: 4px;
+              transform: rotate(-45deg);
+          }
+          &:before {
+              left: 4px;
+              transform: rotate(45deg);
+          }
+      }
+
+
+
+
       .accordion__item {
         margin-bottom: 10px
       }
       .accordion__title > h3 {
-        margin: 0px
+        padding: 10px 0px 10px 40px;
+        margin: 0px;
+        position: relative;
       }
       .accordion__body {
           display: block;

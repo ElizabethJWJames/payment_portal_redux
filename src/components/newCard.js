@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { fromJS } from 'immutable';
 import styled, { css } from 'styled-components';
 import { Form, Text, TextArea } from 'react-form';
+import SvgIcon from './../components/openIconicSvgs/svgIcon.js';
+
 
 //0a1f44
 class NewCardForm extends Component {
@@ -13,11 +15,13 @@ class NewCardForm extends Component {
   }
 
   static propTypes = {
-    onFormSubmit: PropTypes.func
+    onFormSubmit: PropTypes.func,
+    closeModalCB: PropTypes.func
   }
 
   static defaultProps = {
-    onFormSubmit: (x)=>{console.log(x)}
+    onFormSubmit: (x)=>{console.log(x)},
+    closeModalCB: (x)=>{console.log(x)}
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -44,11 +48,31 @@ class NewCardForm extends Component {
       justify: space-around;
       flex-wrap: wrap;
       text-align: left;
-      .contactForm.contactForm {
+      > h2 {
+        background: #0a1f44;
+        color: #fff;
+        width: calc(100% - 101px);
+        margin: 0px;
+        padding: 15px 10px;
+        position: fixed;
+      }
+      .closeModal.closeModal {
+        position: fixed;
+        padding: 15px 10px;
+        right: 40px;
+        background: #0a1f44;
+        color: #fff;
+        &:hover {
+          background: #ED1C24
+        }
+      }
+      .newCardFrom.newCardFrom {
         display: flex;
         flex-direction: column;
         justify-content: space-around;
         align-items: center;
+        margin-top: 60px;
+        padding: 10px 0px;
         width: 100%;
       }
       .newCardInput.newCardInput {
@@ -59,14 +83,7 @@ class NewCardForm extends Component {
         flex-direction: column;
         margin-bottom: 10px;
       }
-      .contactTextArea.contactTextArea {
-        width: calc(100% - 20px);
-        height: 96px;
-        border-radius: 5px;
-        display: flex;
-        flex-direction: column;
-      }
-      .contactSubmit.contactSubmit {
+      .newCardSubmit.newCardSubmit {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -79,15 +96,28 @@ class NewCardForm extends Component {
         font-size: 1.5em;
         color: #fff;
         border: none;
-        background: #0a1f44;
+        background:  #3d78d8;
+        :hover {
+          background: #2c5fb3;
+        }
       }
       ${props => css`${this.props.defaultCompStyle}`}
     `;
     return (
       <NewCardDiv>
       <h2> Add New Card </h2>
+      <div
+       className = 'closeModal'
+       onClick = {this.props.closeModalCB}
+       >
+       <SvgIcon
+           iconName= 'x'
+           iconSize= '24px'
+           iconFill= "#fff"
+         />
+      </div>
       <Form
-        onSubmit={submittedValues => this.props.onFormSubmit( { submittedValues } )}
+        onSubmit={submittedValues => this.props.onFormSubmit( submittedValues )}
       >
         { formApi => (
           <form className = 'newCardFrom' onSubmit={formApi.submitForm} id="newCardForm">
@@ -127,28 +157,7 @@ class NewCardForm extends Component {
                 id="billingZip"
                 placeholder = "Billing Zip"
               />
-            <Text
-                className = 'newCardInput'
-                type = 'text'
-                field="cardNumber"
-                id="cardNumber"
-                placeholder = "card Number"
-              />
-            <Text
-                className = 'newCardInput'
-                type = 'text'
-                field="cardExpirationDate"
-                id="cardExpirationDate"
-                placeholder = "card Expiration Date"
-              />
-            <Text
-                className = 'newCardInput'
-                type = 'text'
-                field="cardCSV"
-                id="cardCSV"
-                placeholder = "card CSV"
-              />
-            <button className="newCardSubmit" type="submit">Submit</button>
+            <button className="newCardSubmit" type="submit"> Next </button>
           </form>
         )}
       </Form>

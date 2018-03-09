@@ -23,6 +23,21 @@ class ContactUsForm extends Component {
     return !fromJS(nextProps).equals(this.props) || !fromJS(nextState).equals(this.state);
   }
 
+  formatPhoneNumber(value){
+    const s = value;
+    const s2 = (""+s).replace(/\D/g, '');
+    const m = s2.match(/^(\d{3})(\d{3})(\d{4})$/);
+    console.log('formatPhoneNumber', s, s2, m, (!m) ? s : "(" + m[1] + ") " + m[2] + "-" + m[3])
+    return (!m) ? s :  m[1] + "-" + m[2] + "-" + m[3];
+  }
+
+  formatValues(formState, formApi){
+     if(formState.id === 'phone'){
+       const newValue = this.formatPhoneNumber(formState.value)
+       return formApi.setValue('phone', newValue);
+     }
+  }
+
   render() {
     const ContactUsDiv = styled.div`
       display: flex;
@@ -65,17 +80,25 @@ class ContactUsForm extends Component {
         font-size: 1.5em;
         color: #fff;
         border: none;
-        background: #0a1f44;
+        background: #3d78d8;
+       :hover {
+         background: #2c5fb3;
+       }
       }
       ${props => css`${this.props.defaultCompStyle}`}
     `;
     return (
       <ContactUsDiv>
       <Form
-        onSubmit={(submittedValues) => this.props.onFormSubmit( { submittedValues } )}
+        onSubmit={(submittedValues) => this.props.onFormSubmit( submittedValues )}
       >
         { formApi => (
-          <form className = 'contactForm' onSubmit={formApi.submitForm} id="form1">
+          <form
+              className = 'contactForm'
+              onSubmit={formApi.submitForm}
+              onChange={(formState)=>{this.formatValues(formState.target, formApi)}}
+              id="form1"
+            >
 
             <Text
                 className = 'contactInput'
@@ -112,7 +135,6 @@ class ContactUsForm extends Component {
                 id="account"
                 placeholder = "Account Number (Optional)"
               />
-              contactDBbuddy <Checkbox field="contactDBbuddy" id="contactDBbuddy" className="contactDBbuddy" />
             <TextArea className = 'contactTextArea' field="msg" id="msg" required placeholder = "Message (Required)"/>
             <button className="contactSubmit" type="submit">Submit</button>
           </form>

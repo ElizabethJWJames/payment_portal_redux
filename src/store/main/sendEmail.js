@@ -37,7 +37,7 @@ export function action (emailObject, store){
   /*
   call the record
   */
-  const EmailObjToStr = `from_name=${emailObject.submittedValues.name}&from_email=${emailObject.submittedValues.email}&subject=${emailObject.submittedValues.account}&message_html=${'Phone: ' + emailObject.submittedValues.phone + ' Message: ' + emailObject.submittedValues.msg}&send_to=support@autostart.com`
+  const EmailObjToStr = `from_name=${emailObject.name}&from_email=${emailObject.email}&subject=${emailObject.account}&message_html=${'Phone: ' + emailObject.phone + ' Message: ' + emailObject.msg}&send_to=support@autostart.com`
 
   return fetch('/api/v1/email/send', {
       //node package qs look up

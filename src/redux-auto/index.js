@@ -187,7 +187,7 @@ function buildActionLayout(fileNameArray){
                   async[avabileAction].clear = clearFn
            } // END else "clear" !== stage
         } else {
-          const argsArray = [data, payload]
+          const argsArray = [data, payload];
           newState = lookup[reducerName][avabileAction](...argsArray);
           chaining.set(lookup[reducerName][avabileAction].chain,action.type,argsArray);
         }

@@ -192,6 +192,7 @@ class NavigationBar extends Component {
       align-items: center;
       width: 100%;
       background: #fff;
+      z-index: 9;
       ${props => css`${this.props.defaultCompStyle}`}
     `;
     return (

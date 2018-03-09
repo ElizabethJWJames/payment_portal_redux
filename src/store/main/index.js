@@ -56,7 +56,20 @@ export default function app(app={} , action) {
         } else {
           newStore = {
             navigation: nav,
-            history: history
+            history: history,
+            modalContent: 'div',
+            alerts: [
+              {
+                alertText: 'This is a warning',
+                alertType: 'warning'
+              },{
+                alertText: 'This is an alert',
+                alertType: 'alert'
+              },{
+                alertText: 'This is Info',
+                alertType: 'info'
+              }
+            ]
           };
         }
         return newStore;
@@ -75,7 +88,6 @@ export default function app(app={} , action) {
       }
       case 'UPDATEACCOUNTS':
       {
-        console.log('UPDATEACCOUNTS', action, app);
         const combinedAccountInfo = objectMerge({...action.payload.accountInformation, ...action.payload.accountDetails})
         const accountRecID = combinedAccountInfo.RecID;
         const filteredArray = app.accountInformation.filter((account, index)=>{
@@ -94,7 +106,7 @@ export default function app(app={} , action) {
         } else {
           newAccountArray = newAccountArray.concat([combinedAccountInfo]);
         }
-        history.push('/myAccount');
+        setTimeout(history.push('/myAccount'), 3000);
         const newStore = objectMerge({...app, ...{accountInformation: newAccountArray}, ...{navigation: authNav}})
         return newStore;
       }
@@ -106,12 +118,37 @@ export default function app(app={} , action) {
       }
       case 'LOGOUT':
       {
+        history.push('/home');
         localStorage.removeItem('store')
         const newStore = {
           navigation: nav,
-          history: history
+          history: history,
+          modalContent: 'div',
+          alerts: [
+            {
+              alertText: 'This is a warning',
+              alertType: 'warning'
+            },{
+              alertText: 'This is an alert',
+              alertType: 'alert'
+            },{
+              alertText: 'This is Info',
+              alertType: 'info'
+            }
+          ]
         };
+        return newStore;
+      }
+      case 'MODALUPDATE':
+      {
+        console.log(action)
+        const newStore = objectMerge({...app, ...{modalContent: action.payload.modalContent}})
+        return newStore;
+      }
+      case 'MODALREGISTERUPDATE':
+      {
         history.push('/home');
+        const newStore = objectMerge({...app, ...{modalContent: action.payload.modalContent}})
         return newStore;
       }
       default:

@@ -40,17 +40,17 @@ class PaymentHistoryRoute extends Component {
 
   renderTable(){
     const currentAccount= this.props.accountInfo[this.state.activeAccount];
-
+    const paymentHistory =  currentAccount.payment_history ?  currentAccount.payment_history : [];
     return (
       <AutoSizer disableHeight>
       {({width})=>{
         return (
           <Table
-            rowGetter = {({ index }) => currentAccount.payment_history[index]}
+            rowGetter = {({ index }) => paymentHistory[index]}
             width = {width-17}
             rowHeight = {48}
             height = {350}
-            rowCount = {currentAccount.payment_history.length}
+            rowCount = {paymentHistory.length}
             className = "payHisTable"
             headerClassName = "tHeader"
             headerHeight = {48}
@@ -124,7 +124,7 @@ class PaymentHistoryRoute extends Component {
       .recieptButton.recieptButton{
         &:hover{
           .printPath.printPath{
-            fill: #ED1C24
+            fill: #50D032
           }
         }
       }
@@ -207,7 +207,10 @@ class PaymentHistoryRoute extends Component {
           </select>
 
         {
-          this.props.accountInfo[this.state.activeAccount].payment_history.length > 1 ? this.renderTable() :
+          this.props.accountInfo[this.state.activeAccount] &&
+          this.props.accountInfo[this.state.activeAccount].payment_history &&
+          this.props.accountInfo[this.state.activeAccount].payment_history.length > 1 ?
+          this.renderTable() :
           (<h3> No Payments have been made on this Account</h3>)
         }
       </PaymentDiv>

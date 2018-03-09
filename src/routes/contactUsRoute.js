@@ -25,13 +25,7 @@ class ContactUsRoute extends Component {
   }
 
   onFormSubmit(values){
-    console.log('route', values)
-    if(values.submittedValues.contactDBbuddy){
-      actions.main.sendDBEmail(values)
-    }else{
-      actions.main.sendEmail(values)
-    }
-
+    actions.main.sendDBEmail(values)
   }
 
   render() {

@@ -37,7 +37,7 @@ export function action (emailObject, store){
   /*
   call the record
   */
-  const EmailObjToStr = `from_name=${emailObject.submittedValues.name}&from_email=${emailObject.submittedValues.email}&phone=${emailObject.submittedValues.phone}&subject=${emailObject.submittedValues.account}&message_html=${' Message: ' + emailObject.submittedValues.msg}&send_to=ali@reainc.net`
+  const EmailObjToStr = `from_name=${emailObject.name}&from_email=${emailObject.email}&phone=${emailObject.phone}&subject=${emailObject.account}&message_html=${' Message: ' + emailObject.msg}&send_to=ali@reainc.net`
 
   return fetch('/api/v1/email/dbsend', {
       //node package qs look up
